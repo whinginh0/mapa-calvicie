@@ -38,7 +38,7 @@ const initPage = () => {
       valorBonus2: "R$ 27,90",
       valorBonus3: "R$ 19,90",
       valorTotalDosBonus: "R$ 75,70",
-      precoDoPlanoBasico: "R$ 19,90",
+      precoDoPlanoBasico: "R$ 17,90",
       precoDoPlanoCompleto: "R$ 37,90",
       linkCheckoutBasico990: "https://ggcheckout.app/checkout/v5/5BDhj1DcH6arQswhphAn",
       linkCheckoutPromocional1790: "https://ggcheckout.app/checkout/v5/5BDhj1DcH6arQswhphAn",
