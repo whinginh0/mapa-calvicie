@@ -1,0 +1,13 @@
+{
+  "name": "massagem-calvicie-lp",
+  "version": "1.0.0",
+  "description": "+100 Técnicas de Massagem Ilustradas para Combater a Calvície",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite --host --port 3000 --open",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
