@@ -427,15 +427,18 @@
 
       <div class="vertical-marquee-wrapper">
         <div class="vertical-marquee-track">
-          <img class="vertical-carousel-img" src="img/vertical-1.webp" alt="Demonstração Ilustrada 01" loading="lazy">
-          <img class="vertical-carousel-img" src="img/vertical-2.webp" alt="Demonstração Ilustrada 02" loading="lazy">
-          <img class="vertical-carousel-img" src="img/vertical-3.webp" alt="Demonstração Ilustrada 03" loading="lazy">
-          <img class="vertical-carousel-img" src="img/vertical-4.webp" alt="Demonstração Ilustrada 04" loading="lazy">
-          <!-- Duplicação para loop infinito suave -->
-          <img class="vertical-carousel-img" src="img/vertical-1.webp" alt="Demonstração Ilustrada 01" loading="lazy">
-          <img class="vertical-carousel-img" src="img/vertical-2.webp" alt="Demonstração Ilustrada 02" loading="lazy">
-          <img class="vertical-carousel-img" src="img/vertical-3.webp" alt="Demonstração Ilustrada 03" loading="lazy">
-          <img class="vertical-carousel-img" src="img/vertical-4.webp" alt="Demonstração Ilustrada 04" loading="lazy">
+          <div class="vertical-marquee-group">
+            <img class="vertical-carousel-img" src="img/vertical-1.webp" alt="Demonstração Ilustrada 01" loading="eager">
+            <img class="vertical-carousel-img" src="img/vertical-2.webp" alt="Demonstração Ilustrada 02" loading="eager">
+            <img class="vertical-carousel-img" src="img/vertical-3.webp" alt="Demonstração Ilustrada 03" loading="eager">
+            <img class="vertical-carousel-img" src="img/vertical-4.webp" alt="Demonstração Ilustrada 04" loading="eager">
+          </div>
+          <div class="vertical-marquee-group" aria-hidden="true">
+            <img class="vertical-carousel-img" src="img/vertical-1.webp" alt="Demonstração Ilustrada 01" loading="eager">
+            <img class="vertical-carousel-img" src="img/vertical-2.webp" alt="Demonstração Ilustrada 02" loading="eager">
+            <img class="vertical-carousel-img" src="img/vertical-3.webp" alt="Demonstração Ilustrada 03" loading="eager">
+            <img class="vertical-carousel-img" src="img/vertical-4.webp" alt="Demonstração Ilustrada 04" loading="eager">
+          </div>
         </div>
       </div>
     </section>

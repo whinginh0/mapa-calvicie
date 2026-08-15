@@ -1103,23 +1103,23 @@ img.responsive-img {
 .vertical-marquee-track {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 16px;
-  padding: 16px 10px;
   width: 100%;
   box-sizing: border-box;
-  -webkit-animation: scrollVertical 14s linear infinite;
-  animation: scrollVertical 14s linear infinite;
+  -webkit-animation: scrollVerticalDown 16s linear infinite !important;
+  animation: scrollVerticalDown 16s linear infinite !important;
   will-change: transform;
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
+  pointer-events: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .vertical-marquee-track:hover {
-    -webkit-animation-play-state: paused;
-    animation-play-state: paused;
-  }
+.vertical-marquee-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
 }
 
 .vertical-carousel-img {
@@ -1133,25 +1133,25 @@ img.responsive-img {
   flex-shrink: 0;
 }
 
-@-webkit-keyframes scrollVertical {
+@-webkit-keyframes scrollVerticalDown {
   0% {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
     -webkit-transform: translate3d(0, calc(-50% - 8px), 0);
     transform: translate3d(0, calc(-50% - 8px), 0);
+  }
+  100% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
-@keyframes scrollVertical {
+@keyframes scrollVerticalDown {
   0% {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
     -webkit-transform: translate3d(0, calc(-50% - 8px), 0);
     transform: translate3d(0, calc(-50% - 8px), 0);
+  }
+  100% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
