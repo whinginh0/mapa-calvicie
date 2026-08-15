@@ -38,7 +38,7 @@ const initPage = () => {
       valorBonus2: "R$ 27,90",
       valorBonus3: "R$ 19,90",
       valorTotalDosBonus: "R$ 75,70",
-      precoDoPlanoBasico: "R$ 17,90",
+      precoDoPlanoBasico: "R$ 19,90",
       precoDoPlanoCompleto: "R$ 37,90",
       linkCheckoutBasico990: "https://ggcheckout.app/checkout/v5/5BDhj1DcH6arQswhphAn",
       linkCheckoutPromocional1790: "https://ggcheckout.app/checkout/v5/5BDhj1DcH6arQswhphAn",
@@ -178,34 +178,97 @@ const initPage = () => {
       }
     };
 
-    const passUtmParams = () => {
+    // --- GESTÃO E INJEÇÃO AUTOMÁTICA DE UTMS EM TODOS OS BOTÕES DE COMPRA ---
+    const setupUtmTrackingAndInjection = () => {
       try {
-        const search = window.location.search;
-        if (!search) return;
+        // 1. Captura UTMs da URL atual e salva no sessionStorage/localStorage
+        const currentSearch = window.location.search;
+        if (currentSearch && currentSearch.length > 1) {
+          const currentParams = new URLSearchParams(currentSearch);
+          const utmData = {};
+          currentParams.forEach((val, key) => {
+            utmData[key] = val;
+          });
+          try {
+            sessionStorage.setItem("utm_params", JSON.stringify(utmData));
+            localStorage.setItem("utm_params", JSON.stringify(utmData));
+          } catch (e) {}
+        }
 
-        const urlParams = new URLSearchParams(search);
+        // 2. Função para mesclar os parâmetros da página com a URL de checkout
+        const getMergedCheckoutUrl = (destUrlStr) => {
+          try {
+            if (!destUrlStr || (!destUrlStr.startsWith("http://") && !destUrlStr.startsWith("https://"))) {
+              return destUrlStr;
+            }
 
-        document.querySelectorAll("a").forEach(a => {
-          let href = a.getAttribute("href");
-          if (href && (href.startsWith("http://") || href.startsWith("https://"))) {
+            const target = new URL(destUrlStr);
+            let savedParams = {};
+
+            // Recupera do storage caso exista
             try {
-              const targetUrl = new URL(href);
-              urlParams.forEach((value, key) => {
-                targetUrl.searchParams.set(key, value);
-              });
-              a.setAttribute("href", targetUrl.toString());
-            } catch (err) {
-              console.warn("Error parsing URL: ", href, err);
+              const fromSession = sessionStorage.getItem("utm_params");
+              const fromLocal = localStorage.getItem("utm_params");
+              savedParams = JSON.parse(fromSession || fromLocal || "{}");
+            } catch (e) {}
+
+            // Adiciona/sobrepõe com parâmetros da URL atual
+            const currentParams = new URLSearchParams(window.location.search);
+            currentParams.forEach((val, key) => {
+              savedParams[key] = val;
+            });
+
+            // Injeta todas as chaves (utm_source, utm_campaign, utm_medium, utm_content, utm_term, src, sck, etc.)
+            Object.keys(savedParams).forEach((key) => {
+              if (savedParams[key]) {
+                target.searchParams.set(key, savedParams[key]);
+              }
+            });
+
+            return target.toString();
+          } catch (err) {
+            console.warn("Erro ao mesclar UTMs:", destUrlStr, err);
+            return destUrlStr;
+          }
+        };
+
+        // 3. Atualiza imediatamente todos os links de checkout na página
+        const updateAllCheckoutLinks = () => {
+          document.querySelectorAll("a").forEach((anchor) => {
+            const href = anchor.getAttribute("href");
+            if (href && (href.includes("ggcheckout.app") || href.startsWith("http"))) {
+              anchor.setAttribute("href", getMergedCheckoutUrl(href));
+            }
+          });
+        };
+        updateAllCheckoutLinks();
+
+        // 4. Interceptador de clique nos botões (Básico, Completo e Hero) para garantir injeção em tempo real
+        document.addEventListener("click", (e) => {
+          const checkoutLink = e.target.closest('a[href*="ggcheckout.app"], a.btn-azul, a.hero-cta-btn, #basic-plan-trigger');
+          if (checkoutLink) {
+            const currentHref = checkoutLink.getAttribute("href");
+            if (currentHref && currentHref.startsWith("http")) {
+              const finalUrl = getMergedCheckoutUrl(currentHref);
+              checkoutLink.setAttribute("href", finalUrl);
+
+              // Dispara evento InitiateCheckout no Meta Pixel
+              if (typeof fbq === "function") {
+                try {
+                  fbq("track", "InitiateCheckout");
+                } catch (pixelErr) {}
+              }
             }
           }
-        });
+        }, true);
+
       } catch (e) {
-        console.error("Error passing UTM parameters:", e);
+        console.error("Erro no setup de UTM tracking:", e);
       }
     };
 
     replacePlaceholders();
-    passUtmParams();
+    setupUtmTrackingAndInjection();
 
     // --- PLACEHOLDERS SVG ESCUROS / ELEGANTES PARA DEMONSTRAÇÕES ---
     const drawSvgPlaceholders = () => {
@@ -233,8 +296,8 @@ const initPage = () => {
           const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
           <rect width="100%" height="100%" fill="#0B1E3F" rx="12"/>
           <rect width="calc(100% - 8px)" height="calc(100% - 8px)" x="4" y="4" fill="none" stroke="#0761F9" stroke-width="1.5" stroke-dasharray="4,4" rx="8"/>
-          <circle cx="${width/2}" cy="${height/2 - 16}" r="24" fill="#0761F9" opacity="0.2"/>
-          <path d="M${width/2 - 10} ${height/2 - 16} l8 8 l12 -12" stroke="#fe6194" stroke-width="2.5" fill="none"/>
+          <circle cx="${width / 2}" cy="${height / 2 - 16}" r="24" fill="#0761F9" opacity="0.2"/>
+          <path d="M${width / 2 - 10} ${height / 2 - 16} l8 8 l12 -12" stroke="#fe6194" stroke-width="2.5" fill="none"/>
           <text x="50%" y="50%" dy="24" dominant-baseline="middle" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">${label}</text>
         </svg>`;
           img.src = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
@@ -359,7 +422,7 @@ const initPage = () => {
         const pushBackState = () => {
           try {
             history.pushState({ page: "back-redirect" }, document.title, window.location.href);
-          } catch (err) {}
+          } catch (err) { }
         };
 
         pushBackState();
